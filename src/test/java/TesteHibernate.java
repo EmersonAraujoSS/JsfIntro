@@ -77,7 +77,17 @@ public class TesteHibernate {
             System.out.println(usuarioPessoaIntro);
             System.out.println("-------------------------------------------------");
         }
+    }
 
 
+    @Test
+    public void testeQueryList(){
+        GenericDao<UsuarioPessoaIntro> genericDao = new GenericDao<>();
+
+        List<UsuarioPessoaIntro> list = genericDao.getEntityManager().createQuery("from UsuarioPessoaIntro where nome = 'Egidio'").getResultList();
+
+        for (UsuarioPessoaIntro usuarioPessoaIntro : list) {
+            System.out.println(usuarioPessoaIntro);
+        }
     }
 }
