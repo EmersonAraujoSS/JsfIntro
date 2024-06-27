@@ -3,6 +3,7 @@ package br.com.educandoweb.dao;
 import br.com.educandoweb.HibernateUtil;
 import javax.persistence.EntityTransaction;
 import javax.persistence.EntityManager;
+import java.util.List;
 
 
 public class GenericDao <E>{
@@ -57,5 +58,16 @@ public class GenericDao <E>{
         E e = (E) entityManager.find(entity, id);
 
         return e;
+    }
+
+
+    public List<E> listar(Class<E> entity){
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        List<E> lista = entityManager.createQuery("from " + entity.getName()).getResultList();
+        transaction.commit();
+
+        return lista;
     }
 }

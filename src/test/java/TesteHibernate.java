@@ -3,6 +3,8 @@ import br.com.educandoweb.dao.GenericDao;
 import br.com.educandoweb.model.UsuarioPessoaIntro;
 import org.junit.Test;
 
+import java.util.List;
+
 public class TesteHibernate {
 
     @Test
@@ -11,7 +13,7 @@ public class TesteHibernate {
         GenericDao<UsuarioPessoaIntro> genericDao = new GenericDao<UsuarioPessoaIntro>();
 
         UsuarioPessoaIntro pessoaIntro = new UsuarioPessoaIntro();
-        pessoaIntro.setNome("Araujo");
+        pessoaIntro.setNome("Paulo");
         pessoaIntro.setSobrenome("teste");
         pessoaIntro.setIdade(22);
         pessoaIntro.setEmail("teste@email.com");
@@ -60,6 +62,21 @@ public class TesteHibernate {
         UsuarioPessoaIntro pessoaIntro = genericDao.pesquisar(131L, UsuarioPessoaIntro.class);
 
         genericDao.deletePorId(pessoaIntro);
+
+
+    }
+
+
+    @Test
+    public void testeConsultar(){
+        GenericDao<UsuarioPessoaIntro> genericDao = new GenericDao<>();
+
+        List<UsuarioPessoaIntro> list = genericDao.listar(UsuarioPessoaIntro.class);
+
+        for (UsuarioPessoaIntro usuarioPessoaIntro : list) {
+            System.out.println(usuarioPessoaIntro);
+            System.out.println("-------------------------------------------------");
+        }
 
 
     }
