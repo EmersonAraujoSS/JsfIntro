@@ -1,16 +1,26 @@
 package br.com.educandoweb.model;
 
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.List;
 
 
 //MInha classe tem que estar com a anotação "@Entity" para informar que será uma tabela do banco de dados
 @Entity
+@NamedQueries({
+
+        @NamedQuery(name = "UsuarioPessoaIntro.todos", query = "select u from UsuarioPessoaIntro u"),
+        @NamedQuery(name = "UsuarioPessoaIntro.buscaPorNome", query = "select u from UsuarioPessoaIntro u where u.nome = :nome")
+})
 public class UsuarioPessoaIntro {
 
-
+    //Atributos
     @Id //para gerar sempre com o numero id
     @GeneratedValue(strategy = GenerationType.AUTO) //para não dar conflito de insert repetido
     private Long id;
@@ -22,6 +32,10 @@ public class UsuarioPessoaIntro {
     private String login;
     private String senha;
     private int idade;
+
+    @OneToMany(mappedBy = "usuarioPessoaIntro", fetch = FetchType.EAGER)
+    private List<TelefoneUser> listTelefoneuser;
+
 
 
     //Metodos especiais
@@ -67,6 +81,13 @@ public class UsuarioPessoaIntro {
     public void setIdade(int idade) {
         this.idade = idade;
     }
+    public List<TelefoneUser> getListTelefoneuser() {
+        return listTelefoneuser;
+    }
+    public void setListTelefoneuser(List<TelefoneUser> listTelefoneuser) {
+        this.listTelefoneuser = listTelefoneuser;
+    }
+
 
     @Override
     public String toString() {
