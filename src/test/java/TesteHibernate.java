@@ -1,5 +1,6 @@
 import br.com.educandoweb.HibernateUtil;
 import br.com.educandoweb.dao.GenericDao;
+import br.com.educandoweb.model.TelefoneUser;
 import br.com.educandoweb.model.UsuarioPessoaIntro;
 import org.junit.Test;
 
@@ -135,4 +136,64 @@ public class TesteHibernate {
         System.out.println("Soma de todas as idades é: " + somaIdade);
     }
 
+
+    @Test
+    public void testeNamedQuery(){
+        GenericDao<UsuarioPessoaIntro> genericDao = new GenericDao<>();
+
+        List<UsuarioPessoaIntro> list = genericDao.getEntityManager()
+                .createNamedQuery("UsuarioPessoaIntro.todos")
+                .getResultList();
+
+        for (UsuarioPessoaIntro usuarioPessoaIntro : list){
+            System.out.println(usuarioPessoaIntro);
+        }
+
+    }
+
+
+    @Test
+    public void testeNamedQuery2(){
+        GenericDao<UsuarioPessoaIntro> genericDao = new GenericDao<>();
+
+        List<UsuarioPessoaIntro> list = genericDao.getEntityManager()
+                .createNamedQuery("UsuarioPessoaIntro.buscaPorNome")
+                .setParameter("nome", "Egidio")
+                .getResultList();
+
+        for (UsuarioPessoaIntro usuarioPessoaIntro : list){
+            System.out.println(usuarioPessoaIntro);
+        }
+    }
+
+
+    @Test
+    public void testeGravarTelefone(){
+        GenericDao genericDao = new GenericDao<>();
+
+        UsuarioPessoaIntro pessoaIntro = (UsuarioPessoaIntro) genericDao.pesquisar(130L, UsuarioPessoaIntro.class);
+
+        TelefoneUser telefoneUser = new TelefoneUser();
+        telefoneUser.setTipo("Casa");
+        telefoneUser.setNumero("92 991605925");
+        telefoneUser.setUsuarioPessoaIntro(pessoaIntro);
+
+        genericDao.salvar(telefoneUser);
+
+    }
+
+
+    @Test
+    public void testeConsultaTelefones(){
+        GenericDao genericDao = new GenericDao<>();
+
+       UsuarioPessoaIntro pessoaIntro = (UsuarioPessoaIntro) genericDao.pesquisar(130L, UsuarioPessoaIntro.class);
+
+       for (TelefoneUser fone : pessoaIntro.getListTelefoneuser()){
+           System.out.println(fone.getTipo());
+           System.out.println(fone.getNumero());
+           System.out.println(fone.getUsuarioPessoaIntro().getNome());
+           System.out.println("=========================================");
+       }
+    }
 }
