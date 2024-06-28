@@ -71,13 +71,14 @@ public class UsuarioPessoaIntro {
     @Override
     public String toString() {
         return "UsuarioPessoaIntro{" +
-                "id=" + id +
-                ", nome='" + nome
-                + ", sobrenome='" + sobrenome
-                + ", email='" + email
-                + ", login='" + login
-                + ", senha='" + senha
-                + ", idade=" + idade
-                + '}';
+                "\n id= " + id +
+                "\n nome= " + nome
+                + "\n sobrenome= " + sobrenome
+                + "\n email= " + email
+                + "\n login= " + login
+                + "\n senha= " + senha
+                + "\n idade= " + idade
+                + "\n"
+                +'}';
     }
 }
