@@ -90,4 +90,20 @@ public class TesteHibernate {
             System.out.println(usuarioPessoaIntro);
         }
     }
+
+
+    @Test
+    public void testeQueryListMaxResult(){
+        GenericDao<UsuarioPessoaIntro> genericDao = new GenericDao<>();
+
+        List<UsuarioPessoaIntro> list = genericDao.getEntityManager()
+                .createQuery(" from UsuarioPessoaIntro order by nome")
+                .setMaxResults(4)
+                .getResultList();
+
+
+        for (UsuarioPessoaIntro usuarioPessoaIntro : list) {
+            System.out.println(usuarioPessoaIntro);
+        }
+    }
 }
