@@ -6,6 +6,7 @@
     <persistence-unit name="jsfIntro">
 
         <class>br.com.educandoweb.model.UsuarioPessoaIntro</class>
+        <class>br.com.educandoweb.model.TelefoneUser</class>
 
         <properties>
             <!-- Dados de conexão com o banco -->
