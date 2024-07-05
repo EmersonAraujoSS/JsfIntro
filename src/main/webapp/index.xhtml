@@ -7,31 +7,27 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <h:head>
-   <title>Teste JSF</title>
-
-   <script type="application/javascript"> <!-- função em javascript-->
-         function alterarValorDoCampo(){
-            var campo = document.getElementById('formPessoa:nome');
-            campo.value = 'eu cliquei no campo :)'
-         }
-   </script>
+   <title>Login</title>
 </h:head>
 
 <h:body>
 
-   <h:form id="formPessoa">
+   <h:form id="formPessoa" style="margin-top: 25%; margin-left: 40%;">
+      <h1>Realize o login</h1>
 
-      <h1>Teste pagina index.xhtml</h1>
+      <h:panelGrid columns="2">
 
-      <h:inputText id="nome" onclick="this.value='troquei o valor'" onchange="this.value = this.value().toUpperCase();"/>
-      <h:commandButton value="Clicar" onclick="alterarValorDoCampo()"/>
+         <h:outputLabel value="Login:"/>
+         <h:inputText value="#{pessoaBean.pessoa.login}"/>
 
-      <br/>
-      <br/>
-      <h:commandButton value="Navegar" action="firstpage" />  <!-- aqui eu estou redirecionando para a minha "firstpage" -->
-                                                                  <!-- chamado de navegação implícita, pois ja esta definido no corpo da pagina" -->
+         <h:outputLabel value="Senha:"/>
+         <h:inputSecret value="#{pessoaBean.pessoa.senha}"/>
+
+         <h:commandButton value="Acessar" action="#{pessoaBean.logar}"/>
+
+      </h:panelGrid>
+
    </h:form>
-
 </h:body>
 
 </html>

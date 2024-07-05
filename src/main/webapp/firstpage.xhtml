@@ -7,24 +7,116 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <h:head>
-   <title>Teste JSF</title>
+   <title>Cadastro de Usuários</title>
 </h:head>
 
 <h:body>
 
-   <h:form>
-      Nome:
-      <h:inputText id="campoNome" value="#{pessoaBean.nome}"/>
-      <h:inputSecret id="senha" value="#{pessoaBean.senha}"/>
-      <h:inputTextarea id="texto" value="#{pessoaBean.texto}" rows="10" cols="10"/>
+   <h:form id="formPessoa">
 
-      <h:commandButton binding="#{pessoaBean.commandButton}" value="Adicionar nome" action="#{pessoaBean.addNome}"/>
+      <h:graphicImage height="150" width="280" library="imagens" name="avancard-logo.webp"/>
 
-      <h:dataTable value="#{pessoaBean.listNomes}" var="nome">
+      <h:panelGrid columns="2"> <!-- panelGrid = serve para organizar  -->
+         <f:facet name="header">
+            <h:outputText value="Cadastro de Usuários"/>
+         </f:facet> <!-- facet = serve para eu colocar meio que um título  -->
+
+
+         <h:outputLabel value="Id:"/>
+         <h:inputText value="#{pessoaBean.pessoa.id}" readonly="true"/>
+
+         <h:outputText value="Nome:"/>
+         <h:inputText value="#{pessoaBean.pessoa.nome}"/>
+
+         <h:outputLabel value="Sobrenome:"/>
+         <h:inputText value="#{pessoaBean.pessoa.sobrenome}"/>
+
+         <h:outputLabel value="Idade:"/>
+         <h:inputText value="#{pessoaBean.pessoa.idade}"/>
+
+         <h:outputLabel value="Sexo:"/>
+         <h:selectOneMenu id="campoSexo" value="#{pessoaBean.pessoa.sexo}">  <!-- selectOneMenu = é aquele famoso combobox só que em jsf, mas seleciona apenas uma opção-->
+            <f:selectItem itemValue="NAO" itemLabel="--Selecione--" noSelectionOption="true"/>
+            <f:selectItem itemValue="M" itemLabel="Masculino"/>      <!-- selectItem = são os valores que irão dentro do selectOneMenu-->
+            <f:selectItem itemValue="F" itemLabel="Feminino"/>             <!-- itemValue = é o que vai aparecer no banco de dados-->
+         </h:selectOneMenu>                                                <!-- itemLabel = é o que vai aparecer na tela para o usuário-->
+
+
+         <h:outputLabel value="Frameworks:"/>
+         <h:selectManyMenu id="campoFrameworks" style="height: 130px;" value="#{pessoaBean.pessoa.frameworks}">
+            <f:selectItem itemValue="Hibernate"/>
+            <f:selectItem itemValue="Spring MVC"/>
+            <f:selectItem itemValue="JPA"/>
+            <f:selectItem itemValue="JSF"/>
+            <f:selectItem itemValue="Primefaces"/>
+         </h:selectManyMenu>   <!-- selectManyMenu = serve para selecionar várias opções-->
+
+         <h:outputLabel value="Ativo:"/>
+         <h:selectBooleanCheckbox value="#{pessoaBean.pessoa.ativo}"/>
+
+         <h:outputLabel value="Login:"/>
+         <h:inputText value="#{pessoaBean.pessoa.login}"/>
+
+         <h:outputLabel value="Senha:"/>
+         <h:inputSecret value="#{pessoaBean.pessoa.senha}"/>
+
+         <h:outputLabel value="Perfil:"/>
+         <h:selectOneMenu id="perfil" value="#{pessoaBean.pessoa.perFilUser}" required="false">
+            <f:selectItem itemLabel="--Selecione--" noSelectionOption="true"/>
+            <f:selectItem itemValue="ADMINISTRADOR" itemLabel="Administrador"/>
+            <f:selectItem itemValue="DESENVOLVEDOR" itemLabel="Desenvolvedor"/>
+            <f:selectItem itemValue="ESTAGIARIO" itemLabel="Estagiario"/>
+         </h:selectOneMenu>
+
+         <h:outputLabel/>
+         <h:panelGroup>
+            <h:commandButton value="Novo" action="#{pessoaBean.novo}" image="resources/imagens/add-user.png" title="Novo"/>
+            <h:commandButton value="Salvar" action="#{pessoaBean.salvar}" image="resources/imagens/icon-salvar.png" title="Salvar"/>
+            <h:commandButton value="Remove" action="#{pessoaBean.remove}" image="resources/imagens/icon-remover.png" title="Remover"/>
+            <h:commandButton value="Limpar" type="reset" image="resources/imagens/icon-limpar.png" title="Limpar"/>
+         </h:panelGroup>
+      </h:panelGrid>
+
+                                                                                             <!--cellpadding = ajusta o tamanho da célula -->
+      <h:dataTable value="#{pessoaBean.pessoasList}" var="pessoa" border="2" cellpadding="6">  <!-- dataTable = estou usando para organizar em forma de tabela -->
+         <f:facet name="header"> <!-- facet = serve para eu colocar meio que um título  -->
+            Lista de usuários cadastradas
+         </f:facet>
+
          <h:column>
-            <h:outputText value="#{nome}"/>
+            <f:facet name="header">ID</f:facet>
+            <h:outputText value="#{pessoa.id}"/>
+         </h:column>
+
+         <h:column>
+            <f:facet name="header">Nome</f:facet>
+            <h:outputText value="#{pessoa.nome}"/>
+         </h:column>
+
+         <h:column>
+            <f:facet name="header">Sobrenome</f:facet>
+            <h:outputText value="#{pessoa.sobrenome}"/>
+         </h:column>
+
+         <h:column>
+            <f:facet name="header">Ação</f:facet>
+            <h:commandLink title="Editar">
+               <f:setPropertyActionListener target="#{pessoaBean.pessoa}" value="#{pessoa}"/><!-- target = para onde vai ser atribuido o valor-->
+               <h:graphicImage value="resources/imagens/icon-editar.png"/>
+            </h:commandLink>                                                                           <!-- value = é o valor que é o objeto da lista de pessoas -->
+         </h:column>
+
+         <h:column>
+            <f:facet name="header">Excluir</f:facet>
+            <h:commandLink action="#{pessoaBean.remove}">
+               <f:setPropertyActionListener target="#{pessoaBean.pessoa}" value="#{pessoa}"/>
+               <h:graphicImage value="resources/imagens/icon-remover.png" title="Excluir"/>
+            </h:commandLink>
          </h:column>
       </h:dataTable>
+
+
+
 
    </h:form>
 
