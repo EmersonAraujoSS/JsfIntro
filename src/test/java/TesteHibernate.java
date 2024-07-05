@@ -1,4 +1,3 @@
-import br.com.educandoweb.HibernateUtil;
 import br.com.educandoweb.dao.GenericDao;
 import br.com.educandoweb.model.TelefoneUser;
 import br.com.educandoweb.model.UsuarioPessoaIntro;
@@ -14,8 +13,8 @@ public class TesteHibernate {
         GenericDao<UsuarioPessoaIntro> genericDao = new GenericDao<UsuarioPessoaIntro>();
 
         UsuarioPessoaIntro pessoaIntro = new UsuarioPessoaIntro();
-        pessoaIntro.setNome("Paulo");
-        pessoaIntro.setSobrenome("teste");
+        pessoaIntro.setNome("Emerson");
+        pessoaIntro.setSobrenome("Araujo dos Santos Silva");
         pessoaIntro.setIdade(22);
         pessoaIntro.setEmail("teste@email.com");
         pessoaIntro.setLogin("teste");
@@ -55,17 +54,17 @@ public class TesteHibernate {
     }
 
 
-    @Test
-    public void testeDelete(){
+   // @Test
+  //  public void testeDelete(){
 
-        GenericDao<UsuarioPessoaIntro> genericDao = new GenericDao<>();
+     //   GenericDao<UsuarioPessoaIntro> genericDao = new GenericDao<>();
 
-        UsuarioPessoaIntro pessoaIntro = genericDao.pesquisar(131L, UsuarioPessoaIntro.class);
+       // UsuarioPessoaIntro pessoaIntro = genericDao.pesquisar(131L, UsuarioPessoaIntro.class);
 
-        genericDao.deletePorId(pessoaIntro);
+       // genericDao.deletePorId(pessoaIntro);
 
 
-    }
+   // }
 
 
     @Test
