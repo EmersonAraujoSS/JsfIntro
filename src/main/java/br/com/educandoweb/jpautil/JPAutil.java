@@ -1,4 +1,4 @@
-package br.com.educandoweb;
+package br.com.educandoweb.jpautil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -6,10 +6,10 @@ import javax.persistence.Persistence;
 
 
 
-public class HibernateUtil {
+public class JPAutil {
 
     //essa classe que vai ser responsavel pela minha conexão com o banco de dados
-    public static EntityManagerFactory factory = null;
+    private static EntityManagerFactory factory = null;
 
 
     //Metodo
