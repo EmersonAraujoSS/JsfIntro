@@ -1,10 +1,20 @@
 package br.com.educandoweb;
 
-import jakarta.inject.Named;
+import br.com.educandoweb.dao.GenericDao;
+import br.com.educandoweb.entities.Pessoa;
 
+
+import br.com.educandoweb.repository.IDaoPessoa;
+import br.com.educandoweb.repository.IDaoPessoaImpl;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Named;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlCommandButton;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,56 +29,81 @@ import java.util.List;
 public class PessoaBean {
 
     //Atributos
-    private String nome;
-    private String senha;
-    private String texto;
-
-    private HtmlCommandButton commandButton; // controlando meu commandButton no meu manageBean
-    private List<String> listNomes = new ArrayList<>();
+    private Pessoa pessoa = new Pessoa();
+    private GenericDao<Pessoa> genericDao = new GenericDao<Pessoa>();
+    private List<Pessoa> pessoasList = new ArrayList<>();
+    private IDaoPessoa iDaoPessoa = new IDaoPessoaImpl();
 
 
-    //Metodo
-    public String addNome(){
-        listNomes.add(nome);
+    //Metodos
+    public String salvar() {
+        pessoa = genericDao.merge(pessoa);
+        carregarPessoas();
 
-        if (listNomes.size() > 3){ // leitura = se minha lista de nomes for maior que tres, eu desabilito o botão
-            commandButton.setDisabled(true);
-            return "pagenavegada?faces-redirect=true";  // assim que ele passar de tres nomes ele desabilita e me redireciona para essa pagina
-        }                                                   //NAVEGACAO DINAMICA
-                                                                       // ?faces-redirect=true = uso para redirecionar minha url na pagina
-        return""; //retornado null ou vazio, ele fica na mesma pagina
+        return "";
     }
 
 
-    //Metodos especiais
-    public String getNome() {
-        return nome;
+    public String novo(){
+        pessoa = new Pessoa();
+
+        return "";
     }
-    public void setNome(String nome) {
-        this.nome = nome;
+
+    public String remove(){
+        genericDao.deletePorId(pessoa);
+        pessoa = new Pessoa();
+        carregarPessoas();
+
+        return "";
     }
-    public List<String> getListNomes() {
-        return listNomes;
+
+    @PostConstruct  //essa anotação indica que sempre que for carregado em memória, ele irá carregar a minha lista
+    public void carregarPessoas(){
+        pessoasList = genericDao.getListEntity(Pessoa.class);
     }
-    public void setListNomes(List<String> listNomes) {
-        this.listNomes = listNomes;
+
+
+    public String logar(){
+
+        Pessoa pessoaUser = iDaoPessoa.consultarUsuario(pessoa.getLogin(), pessoa.getSenha());
+
+        if(pessoaUser != null){
+
+            //adicionar o usuário na sessão usuarioLogado
+            FacesContext context = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = context.getExternalContext();
+
+            HttpServletRequest req = (HttpServletRequest) externalContext.getRequest();
+            HttpSession session = req.getSession();
+
+            session.setAttribute("usuarioLogado", pessoaUser);
+
+            return "firstpage.xhtml";
+        }
+
+        return "index.xhtml";
     }
-    public HtmlCommandButton getCommandButton() {
-        return commandButton;
+
+
+
+    //Metodos especias
+    public Pessoa getPessoa() {
+        return pessoa;
     }
-    public void setCommandButton(HtmlCommandButton commandButton) {
-        this.commandButton = commandButton;
+    public void setPessoa(Pessoa pessoa) {
+        this.pessoa = pessoa;
     }
-    public String getSenha() {
-        return senha;
+    public GenericDao<Pessoa> getGenericDao() {
+        return genericDao;
     }
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setGenericDao(GenericDao<Pessoa> genericDao) {
+        this.genericDao = genericDao;
     }
-    public String getTexto() {
-        return texto;
+    public List<Pessoa> getPessoasList() {
+        return pessoasList;
     }
-    public void setTexto(String texto) {
-        this.texto = texto;
+    public void setPessoasList(List<Pessoa> pessoasList) {
+        this.pessoasList = pessoasList;
     }
 }
