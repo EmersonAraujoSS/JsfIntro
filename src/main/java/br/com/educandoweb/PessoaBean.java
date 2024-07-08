@@ -13,8 +13,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,16 +71,21 @@ public class PessoaBean {
             //adicionar o usuário na sessão usuarioLogado
             FacesContext context = FacesContext.getCurrentInstance();
             ExternalContext externalContext = context.getExternalContext();
-
-            HttpServletRequest req = (HttpServletRequest) externalContext.getRequest();
-            HttpSession session = req.getSession();
-
-            session.setAttribute("usuarioLogado", pessoaUser);
+            externalContext.getSessionMap().put("usuarioLogado", pessoaUser);
 
             return "firstpage.xhtml";
         }
 
         return "index.xhtml";
+    }
+
+
+    public boolean permiteAcesso(String acesso){
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+        Pessoa pessoaUser = (Pessoa) externalContext.getSessionMap().get("usuarioLogado");
+
+        return pessoaUser.getPerFilUser().equals(acesso);
     }
 
 
