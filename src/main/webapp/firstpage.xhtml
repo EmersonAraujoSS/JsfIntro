@@ -12,7 +12,13 @@
 
 <h:body>
 
-   <h:form id="formPessoa">
+   <h:form>
+      <h:commandLink value="Administração" action="lancamento" style="margin-left: 1cm;"/>
+      <h:commandLink value="Lançamento" action= "firstpage" style="margin-left: 1cm;"/>
+      <h:commandLink value="Trocar Usuário" action="index" style="margin-left: 1cm;"/>
+   </h:form>
+
+   <h:form id="formPessoa" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"> <!-- aqui apenas o usuário de administrador vai ter acesso ao formulário-->
 
       <h:graphicImage height="150" width="280" library="imagens" name="avancard-logo.webp"/>
 
@@ -72,7 +78,7 @@
          <h:panelGroup>
             <h:commandButton value="Novo" action="#{pessoaBean.novo}" image="resources/imagens/add-user.png" title="Novo"/>
             <h:commandButton value="Salvar" action="#{pessoaBean.salvar}" image="resources/imagens/icon-salvar.png" title="Salvar"/>
-            <h:commandButton value="Remove" action="#{pessoaBean.remove}" image="resources/imagens/icon-remover.png" title="Remover"/>
+            <h:commandButton value="Remove" action="#{pessoaBean.remove}" image="resources/imagens/icon-remover.png" title="Remover" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"/>
             <h:commandButton value="Limpar" type="reset" image="resources/imagens/icon-limpar.png" title="Limpar"/>
          </h:panelGroup>
       </h:panelGrid>
@@ -106,7 +112,7 @@
             </h:commandLink>                                                                           <!-- value = é o valor que é o objeto da lista de pessoas -->
          </h:column>
 
-         <h:column>
+         <h:column rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"> <!-- rendered = aqui ele está deixando o acesso de excluir apenas para o usuário ADMINISTRADOR-->
             <f:facet name="header">Excluir</f:facet>
             <h:commandLink action="#{pessoaBean.remove}">
                <f:setPropertyActionListener target="#{pessoaBean.pessoa}" value="#{pessoa}"/>
