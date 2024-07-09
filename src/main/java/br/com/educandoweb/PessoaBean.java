@@ -26,14 +26,14 @@ import java.util.List;
 
 public class PessoaBean {
 
-    //Atributos
+    //ATRIBUTOS
     private Pessoa pessoa = new Pessoa();
     private GenericDao<Pessoa> genericDao = new GenericDao<Pessoa>();
     private List<Pessoa> pessoasList = new ArrayList<>();
     private IDaoPessoa iDaoPessoa = new IDaoPessoaImpl();
 
 
-    //Metodos
+    //MÉTODOS
     public String salvar() {
         pessoa = genericDao.merge(pessoa);
         carregarPessoas();
@@ -90,7 +90,7 @@ public class PessoaBean {
 
 
 
-    //Metodos especias
+    //MÉTODOS ESPECIAIS
     public Pessoa getPessoa() {
         return pessoa;
     }

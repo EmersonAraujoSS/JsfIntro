@@ -11,15 +11,16 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-
+//MInha classe tem que estar com a anotação "@Entity" para informar que será uma tabela do banco de dados
 @Entity
 public class Pessoa implements Serializable {
     private static final long serialVersionUID = 1L;
 
     //ATRIBUTOS
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO) //para não dar conflito de insert repetido
     private Long id;
+
     private String nome;
     private String sobrenome;
     private Integer idade;

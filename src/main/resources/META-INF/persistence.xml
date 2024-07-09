@@ -9,6 +9,8 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>br.com.educandoweb.model.UsuarioPessoaIntro</class>
         <class>br.com.educandoweb.model.TelefoneUser</class>
+        <class>br.com.educandoweb.entities.Pessoa</class>
+        <class>br.com.educandoweb.entities.Lancamento</class>
 
         <properties>
             <!-- Dados de conexão com o banco -->
