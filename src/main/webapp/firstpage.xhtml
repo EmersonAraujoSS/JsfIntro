@@ -13,8 +13,8 @@
 <h:body>
 
    <h:form>
-      <h:commandLink value="Administração" action="lancamento" style="margin-left: 1cm;"/>
-      <h:commandLink value="Lançamento" action= "firstpage" style="margin-left: 1cm;"/>
+      <h:commandLink value="Administração" action="firstpage" style="margin-left: 1cm;" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"/>
+      <h:commandLink value="Lançamento" action="lancamento" style="margin-left: 1cm;"/>
       <h:commandLink value="Trocar Usuário" action="index" style="margin-left: 1cm;"/>
    </h:form>
 
@@ -108,8 +108,8 @@
             <f:facet name="header">Ação</f:facet>
             <h:commandLink title="Editar">
                <f:setPropertyActionListener target="#{pessoaBean.pessoa}" value="#{pessoa}"/><!-- target = para onde vai ser atribuido o valor-->
-               <h:graphicImage value="resources/imagens/icon-editar.png"/>
-            </h:commandLink>                                                                           <!-- value = é o valor que é o objeto da lista de pessoas -->
+               <h:graphicImage value="resources/imagens/icon-editar.png"/>                           <!-- value = é o valor que é o objeto da lista de pessoas -->
+            </h:commandLink>
          </h:column>
 
          <h:column rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"> <!-- rendered = aqui ele está deixando o acesso de excluir apenas para o usuário ADMINISTRADOR-->
