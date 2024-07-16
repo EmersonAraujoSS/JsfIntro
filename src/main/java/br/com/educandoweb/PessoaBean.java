@@ -6,13 +6,22 @@ import br.com.educandoweb.entities.Pessoa;
 
 import br.com.educandoweb.repository.IDaoPessoa;
 import br.com.educandoweb.repository.IDaoPessoaImpl;
+import com.google.gson.Gson;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Named;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlCommandButton;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,21 +46,38 @@ public class PessoaBean {
     public String salvar() {
         pessoa = genericDao.merge(pessoa);
         carregarPessoas();
+        mostrarMsg("Cadastrado com sucesso!");
 
         return "";
+    }
+
+
+    private void mostrarMsg(String msg) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        FacesMessage message = new FacesMessage(msg);
+        context.addMessage(null, message);
     }
 
 
     public String novo(){
+        //executa algum processo antes de novo
         pessoa = new Pessoa();
-
         return "";
     }
+
+
+    public String limpar(){
+        //executa algum processo antes de limpar
+        pessoa = new Pessoa();
+        return "";
+    }
+
 
     public String remove(){
         genericDao.deletePorId(pessoa);
         pessoa = new Pessoa();
         carregarPessoas();
+        mostrarMsg("Removido com sucesso!");
 
         return "";
     }
@@ -60,6 +86,23 @@ public class PessoaBean {
     public void carregarPessoas(){
         pessoasList = genericDao.getListEntity(Pessoa.class);
     }
+
+
+
+    public String deslogar(){
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+        externalContext.getSessionMap().remove("usuarioLogado");
+
+        HttpServletRequest httpServletRequest = (HttpServletRequest)
+                context.getCurrentInstance().getExternalContext().getRequest();
+
+        httpServletRequest.getSession().invalidate();
+
+        return "index.xhtml";
+    }
+
 
 
     public String logar(){
@@ -86,6 +129,41 @@ public class PessoaBean {
         Pessoa pessoaUser = (Pessoa) externalContext.getSessionMap().get("usuarioLogado");
 
         return pessoaUser.getPerFilUser().equals(acesso);
+    }
+
+
+    public void pesquisaCep(AjaxBehaviorEvent event){
+
+        try {
+            URL url = new URL("https://viacep.com.br/ws/"+ pessoa.getCep()+"/json/"); //consumindo WEB SERVICE DE CEP
+            URLConnection connection = url.openConnection();  //URLConnection = iniciando minha conexão de cep
+            InputStream inputStream = connection.getInputStream(); //InputStream = executa as configurações no servidor e retorna a informação
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream,"UTF-8")); //BufferedReader = vai ser usado para fazer leitura de fluxo de dados
+
+            String cep = "";
+            StringBuilder jsonCep = new StringBuilder(); //StringBuilder = facilita a criação e manipulação de strings de maneira eficiente.
+
+            while ((cep = br.readLine()) != null){
+                jsonCep.append(cep); //append = adicionar um novo elemento ao final da lista.
+            }
+
+            Pessoa gsonAux = new Gson().fromJson(jsonCep.toString(), Pessoa.class);
+            pessoa.setCep(gsonAux.getCep());
+            pessoa.setLogradouro(gsonAux.getLogradouro());
+            pessoa.setComplemento(gsonAux.getComplemento());
+            pessoa.setUf(gsonAux.getUf());
+            pessoa.setBairro(gsonAux.getBairro());
+            pessoa.setLocalidade(gsonAux.getLocalidade());
+            pessoa.setUf(gsonAux.getUf());
+            pessoa.setUnidade(gsonAux.getUnidade());
+            pessoa.setIbge(gsonAux.getIbge());
+            pessoa.setGia(gsonAux.getGia());
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+            mostrarMsg("Erro ao consultar o CEP");
+        }
     }
 
 

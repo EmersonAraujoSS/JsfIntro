@@ -12,11 +12,7 @@
 
 <h:body>
 
-   <h:form>
-      <h:commandLink value="Administração" action="firstpage" style="margin-left: 1cm;" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"/>
-      <h:commandLink value="Lançamento" action="lancamento" style="margin-left: 1cm;"/>
-      <h:commandLink value="Trocar Usuário" action="index" style="margin-left: 1cm;"/>
-   </h:form>
+   <ui:include src="/menu.xhtml"/>   <!--include = vai acessar meu método que está no menu, para eu não precisar repetir código -->
 
    <h:form id="formLancamento">
 

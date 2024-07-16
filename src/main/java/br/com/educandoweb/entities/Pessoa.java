@@ -30,9 +30,20 @@ public class Pessoa implements Serializable {
     private String login;
     private String senha;
     private String perFilUser;
+    private String nivelProgramador;
+    private Integer[] linguagens; //coloquei as linguagens no array porque eu posso selecionar várias linguagens com o "selectManyCheckbox" ná minha firstpage
+    private String cep;
+    private String logradouro;
+    private String complemento;
+    private String bairro;
+    private String localidade;
+    private String uf;
+    private String unidade;
+    private String ibge;
+    private String gia;
 
     @Temporal(TemporalType.DATE)
-    private Date dataNascimento;
+    private Date dataNascimento = new Date();
 
 
 
@@ -42,21 +53,30 @@ public class Pessoa implements Serializable {
     }
 
     //CONSTRUTOR (com argumentos)
-    public Pessoa(Long id, String nome, String sobrenome, Integer idade, Date dataNascimento, String sexo, String[] frameworks, Boolean ativo, String login, String senha, String perFilUser) {
+    public Pessoa(Long id, String nome, String sobrenome, Integer idade, String sexo, String[] frameworks, Boolean ativo, String login, String senha, String perFilUser, String nivelProgramador, Integer[] linguagens, String cep, String logradouro, String complemento, String bairro, String localidade, String uf, String unidade, String ibge, String gia, Date dataNascimento) {
         this.id = id;
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.idade = idade;
-        this.dataNascimento = dataNascimento;
         this.sexo = sexo;
         this.frameworks = frameworks;
         this.ativo = ativo;
         this.login = login;
         this.senha = senha;
         this.perFilUser = perFilUser;
+        this.nivelProgramador = nivelProgramador;
+        this.linguagens = linguagens;
+        this.cep = cep;
+        this.logradouro = logradouro;
+        this.complemento = complemento;
+        this.bairro = bairro;
+        this.localidade = localidade;
+        this.uf = uf;
+        this.unidade = unidade;
+        this.ibge = ibge;
+        this.gia = gia;
+        this.dataNascimento = dataNascimento;
     }
-
-
 
     //METODOS ESPECIAIS
     public Long getId() {
@@ -122,6 +142,72 @@ public class Pessoa implements Serializable {
     }
     public void setPerFilUser(String perFilUser) {
         this.perFilUser = perFilUser;
+    }
+    public String getNivelProgramador() {
+        return nivelProgramador;
+    }
+    public void setNivelProgramador(String nivelProgramador) {
+        this.nivelProgramador = nivelProgramador;
+    }
+    public Integer[] getLinguagens() {
+        return linguagens;
+    }
+    public void setLinguagens(Integer[] linguagens) {
+        this.linguagens = linguagens;
+    }
+    public String getCep() {
+        return cep;
+    }
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+    public String getLogradouro() {
+        return logradouro;
+    }
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
+    }
+    public String getComplemento() {
+        return complemento;
+    }
+    public void setComplemento(String complemento) {
+        this.complemento = complemento;
+    }
+    public String getBairro() {
+        return bairro;
+    }
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+    public String getLocalidade() {
+        return localidade;
+    }
+    public void setLocalidade(String localidade) {
+        this.localidade = localidade;
+    }
+    public String getUf() {
+        return uf;
+    }
+    public void setUf(String uf) {
+        this.uf = uf;
+    }
+    public String getUnidade() {
+        return unidade;
+    }
+    public void setUnidade(String unidade) {
+        this.unidade = unidade;
+    }
+    public String getIbge() {
+        return ibge;
+    }
+    public void setIbge(String ibge) {
+        this.ibge = ibge;
+    }
+    public String getGia() {
+        return gia;
+    }
+    public void setGia(String gia) {
+        this.gia = gia;
     }
 
 

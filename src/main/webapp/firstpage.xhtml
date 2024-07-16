@@ -4,7 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
 <h:head>
    <title>Cadastro de Usuários</title>
@@ -12,27 +13,27 @@
 
 <h:body>
 
-   <h:form>
-      <h:commandLink value="Administração" action="firstpage" style="margin-left: 1cm;" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"/>
-      <h:commandLink value="Lançamento" action="lancamento" style="margin-left: 1cm;"/>
-      <h:commandLink value="Trocar Usuário" action="index" style="margin-left: 1cm;"/>
-   </h:form>
+   <ui:include src="menu.xhtml"/>  <!--include = vai acessar meu método que está no menu, para eu não precisar repetir código -->
 
    <h:form id="formPessoa" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"> <!-- aqui apenas o usuário de administrador vai ter acesso ao formulário-->
 
       <h:graphicImage height="150" width="280" library="imagens" name="avancard-logo.webp"/>
+
+      <h:messages/>  <!-- adicionando a mensagem feita no meu pessoabean  -->
 
       <h:panelGrid columns="2"> <!-- panelGrid = serve para organizar  -->
          <f:facet name="header">
             <h:outputText value="Cadastro de Usuários"/>
          </f:facet> <!-- facet = serve para eu colocar meio que um título  -->
 
-
          <h:outputLabel value="Id:"/>
          <h:inputText value="#{pessoaBean.pessoa.id}" readonly="true"/>
 
          <h:outputText value="Nome:"/>
-         <h:inputText value="#{pessoaBean.pessoa.nome}"/>
+         <h:inputText value="#{pessoaBean.pessoa.nome}" required="true" requiredMessage="Informe o nome do usuário"
+                      pt:placeholder="Informe o nome do usuário" validatorMessage="Nome precisa ter no mínimo 3 letras"> <!--placeholder = deixa mensagem dentro do campo de texto -->
+            <f:validateLength minimum="3" maximum="50"/>      <!--required = serve para informar que esse campo vai ser obrigatório ser preenchido -->
+         </h:inputText>
 
          <h:outputLabel value="Sobrenome:"/>
          <h:inputText value="#{pessoaBean.pessoa.sobrenome}"/>
@@ -45,8 +46,13 @@
             <f:selectItem itemValue="NAO" itemLabel="--Selecione--" noSelectionOption="true"/>
             <f:selectItem itemValue="M" itemLabel="Masculino"/>      <!-- selectItem = são os valores que irão dentro do selectOneMenu-->
             <f:selectItem itemValue="F" itemLabel="Feminino"/>             <!-- itemValue = é o que vai aparecer no banco de dados-->
-         </h:selectOneMenu>                                                <!-- itemLabel = é o que vai aparecer na tela para o usuário-->
+         </h:selectOneMenu>                                                      <!-- itemLabel = é o que vai aparecer na tela para o usuário-->
 
+         <h:outputLabel/>
+         <h:outputLabel value="Nascimento:"/>
+            <h:inputText value="#{pessoaBean.pessoa.dataNascimento}" converterMessage="Data de nascimento errada">
+               <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="GMT-04:00"/>
+            </h:inputText>
 
          <h:outputLabel value="Frameworks:"/>
          <h:selectManyMenu id="campoFrameworks" style="height: 130px;" value="#{pessoaBean.pessoa.frameworks}">
@@ -56,6 +62,36 @@
             <f:selectItem itemValue="JSF"/>
             <f:selectItem itemValue="Primefaces"/>
          </h:selectManyMenu>   <!-- selectManyMenu = serve para selecionar várias opções-->
+
+         <h:outputLabel/>
+         <h:outputLabel value="CEP:"/>
+         <h:inputText value="#{pessoaBean.pessoa.cep}">                                   <!-- render = vai carregar o logradouro assim que eu colocar o cep-->
+            <f:ajax event="blur" execute="@this" listener="#{pessoaBean.pesquisaCep}" render="logradouro complemento bairro localidade uf unidade ibge gia"/>  <!-- event="blur" = no jsf significa perda de foco-->
+         </h:inputText>
+
+         <h:outputLabel value="Logradouro:"/>
+         <h:inputText value="#{pessoaBean.pessoa.logradouro}" id="logradouro"/>
+
+         <h:outputLabel value="Complemento:"/>
+         <h:inputText value="#{pessoaBean.pessoa.complemento}" id="complemento"/>
+
+         <h:outputLabel value="Bairro:"/>
+         <h:inputText value="#{pessoaBean.pessoa.bairro}" id="bairro"/>
+
+         <h:outputLabel value="Localidade:"/>
+         <h:inputText value="#{pessoaBean.pessoa.localidade}" id="localidade"/>
+
+         <h:outputLabel value="UF:"/>
+         <h:inputText value="#{pessoaBean.pessoa.uf}" id="uf"/>
+
+         <h:outputLabel value="Unidade:"/>
+         <h:inputText value="#{pessoaBean.pessoa.unidade}" id="unidade"/>
+
+         <h:outputLabel value="Ibge:"/>
+         <h:inputText value="#{pessoaBean.pessoa.ibge}" id="ibge"/>
+
+         <h:outputLabel value="Gia:"/>
+         <h:inputText value="#{pessoaBean.pessoa.gia}" id="gia"/>
 
          <h:outputLabel value="Ativo:"/>
          <h:selectBooleanCheckbox value="#{pessoaBean.pessoa.ativo}"/>
@@ -74,16 +110,34 @@
             <f:selectItem itemValue="ESTAGIARIO" itemLabel="Estagiario"/>
          </h:selectOneMenu>
 
-         <h:outputLabel/>
-         <h:panelGroup>
-            <h:commandButton value="Novo" action="#{pessoaBean.novo}" image="resources/imagens/add-user.png" title="Novo"/>
-            <h:commandButton value="Salvar" action="#{pessoaBean.salvar}" image="resources/imagens/icon-salvar.png" title="Salvar"/>
-            <h:commandButton value="Remove" action="#{pessoaBean.remove}" image="resources/imagens/icon-remover.png" title="Remover" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"/>
-            <h:commandButton value="Limpar" type="reset" image="resources/imagens/icon-limpar.png" title="Limpar"/>
-         </h:panelGroup>
+         <h:outputLabel value="Programador:"/>
+         <h:selectOneRadio value="#{pessoaBean.pessoa.nivelProgramador}" layout="pageDirection">  <!--layout="pageDirection" = serve para organizar o layoult oneRadio-->
+            <f:selectItem itemValue="JUNIOR" itemLabel="Junior"/>   <!-- itemValue = é o que vai aparecer no banco de dados-->
+            <f:selectItem itemValue="PLENO" itemLabel="Pleno"/>        <!-- itemLabel = é o que vai aparecer na tela para o usuário-->
+            <f:selectItem itemValue="SENIOR" itemLabel="Sênior"/>
+            <f:selectItem itemValue="FULLSTACK" itemLabel="FullStack"/>
+         </h:selectOneRadio>
+
+         <h:outputLabel value="Linguagens"/>
+         <h:selectManyCheckbox value="#{pessoaBean.pessoa.linguagens}">  <!--selectManyCheckbox = consigo selecionar várias linguagens com esse método  -->
+            <f:selectItem itemValue="1" itemLabel="Java"/>
+            <f:selectItem itemValue="2" itemLabel="PHP"/>
+            <f:selectItem itemValue="3" itemLabel="Pyton"/>
+            <f:selectItem itemValue="4" itemLabel="C#"/>
+            <f:selectItem itemValue="5" itemLabel="Cobol"/>
+         </h:selectManyCheckbox>
       </h:panelGrid>
 
-                                                                                             <!--cellpadding = ajusta o tamanho da célula -->
+      <h:panelGroup>
+         <h:commandButton value="Novo" action="#{pessoaBean.novo}" image="resources/imagens/add-user.png" title="Novo"/>
+         <h:commandButton value="Salvar" action="#{pessoaBean.salvar}" image="resources/imagens/icon-salvar.png" title="Salvar"/>
+         <h:commandButton value="Remove" action="#{pessoaBean.remove}" image="resources/imagens/icon-remover.png" title="Remover" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"/>
+         <h:commandButton value="Limpar" action="#{pessoaBean.limpar}" image="resources/imagens/icon-limpar.png" title="Limpar"/>
+      </h:panelGroup>
+
+   </h:form>
+
+   <h:form id="formTable">                                                       <!--cellpadding = ajusta o tamanho da célula -->
       <h:dataTable value="#{pessoaBean.pessoasList}" var="pessoa" border="2" cellpadding="6">  <!-- dataTable = estou usando para organizar em forma de tabela -->
          <f:facet name="header"> <!-- facet = serve para eu colocar meio que um título  -->
             Lista de usuários cadastradas
@@ -120,10 +174,6 @@
             </h:commandLink>
          </h:column>
       </h:dataTable>
-
-
-
-
    </h:form>
 
 </h:body>
