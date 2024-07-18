@@ -118,7 +118,7 @@
             <f:selectItem itemValue="FULLSTACK" itemLabel="FullStack"/>
          </h:selectOneRadio>
 
-         <h:outputLabel value="Linguagens"/>
+         <h:outputLabel value="Linguagens:"/>
          <h:selectManyCheckbox value="#{pessoaBean.pessoa.linguagens}">  <!--selectManyCheckbox = consigo selecionar várias linguagens com esse método  -->
             <f:selectItem itemValue="1" itemLabel="Java"/>
             <f:selectItem itemValue="2" itemLabel="PHP"/>
@@ -126,15 +126,29 @@
             <f:selectItem itemValue="4" itemLabel="C#"/>
             <f:selectItem itemValue="5" itemLabel="Cobol"/>
          </h:selectManyCheckbox>
-      </h:panelGrid>
 
-      <h:panelGroup>
-         <h:commandButton value="Novo" action="#{pessoaBean.novo}" image="resources/imagens/add-user.png" title="Novo"/>
-         <h:commandButton value="Salvar" action="#{pessoaBean.salvar}" image="resources/imagens/icon-salvar.png" title="Salvar"/>
-         <h:commandButton value="Remove" action="#{pessoaBean.remove}" image="resources/imagens/icon-remover.png" title="Remover" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"/>
-         <h:commandButton value="Limpar" action="#{pessoaBean.limpar}" image="resources/imagens/icon-limpar.png" title="Limpar"/>
-      </h:panelGroup>
+         <h:outputLabel value="Estados:"/>
+         <h:selectOneMenu value="#{pessoaBean.pessoa.estados}" immediate="true" id="comboEstados" converter="estadoConverter"> <!--immediate = é usado quando se usa ajax para passar a requisição por "debaixo" de qualquer validação que ele tente fazer e chamar o método -->
+            <f:selectItem itemLabel="--Selecione--" noSelectionOption="true"/>
+            <f:selectItems value="#{pessoaBean.estados}"/>
+            <f:ajax event="change" execute="@this" render="comboCidade" listener="#{pessoaBean.carregarCidades}"/> <!--render = serve para recarregar o informado -->
+         </h:selectOneMenu>
 
+         <h:outputLabel value="Cidades:"/>
+         <h:selectOneMenu value="#{pessoaBean.pessoa.cidades}" immediate="true" id="comboCidade" converter="cidadeConverter">
+            <f:selectItem noSelectionOption="true" itemLabel="--Selecione--"/>
+            <f:selectItems value="#{pessoaBean.cidades}"/>
+         </h:selectOneMenu>
+
+         <h:outputLabel/>
+         <h:panelGroup>
+            <h:commandButton value="Novo" action="#{pessoaBean.novo}" image="resources/imagens/add-user.png" title="Novo"/>
+            <h:commandButton value="Salvar" action="#{pessoaBean.salvar}" image="resources/imagens/icon-salvar.png" title="Salvar"/>
+            <h:commandButton value="Remove" action="#{pessoaBean.remove}" image="resources/imagens/icon-remover.png" title="Remover" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"/>
+            <h:commandButton value="Limpar" action="#{pessoaBean.limpar}" image="resources/imagens/icon-limpar.png" title="Limpar"/>
+         </h:panelGroup>
+
+   </h:panelGrid>
    </h:form>
 
    <h:form id="formTable">                                                       <!--cellpadding = ajusta o tamanho da célula -->

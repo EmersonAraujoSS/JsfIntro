@@ -1,8 +1,9 @@
 package br.com.educandoweb.entities;
 
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
 import javax.persistence.GenerationType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -41,6 +42,12 @@ public class Pessoa implements Serializable {
     private String unidade;
     private String ibge;
     private String gia;
+
+    @Transient //Transient = não cria essa coluna no banco de dados, ele só cria o objeto em memória
+    private Estados estados;
+
+    @ManyToOne // uma cidade pode ter várias pessoas
+    private Cidades cidades;
 
     @Temporal(TemporalType.DATE)
     private Date dataNascimento = new Date();
@@ -209,6 +216,19 @@ public class Pessoa implements Serializable {
     public void setGia(String gia) {
         this.gia = gia;
     }
+    public Estados getEstados() {
+        return estados;
+    }
+    public void setEstados(Estados estados) {
+        this.estados = estados;
+    }
+    public Cidades getCidades() {
+        return cidades;
+    }
+    public void setCidades(Cidades cidades) {
+        this.cidades = cidades;
+    }
+
 
 
 

@@ -1,9 +1,12 @@
 package br.com.educandoweb;
 
 import br.com.educandoweb.dao.GenericDao;
+import br.com.educandoweb.entities.Cidades;
+import br.com.educandoweb.entities.Estados;
 import br.com.educandoweb.entities.Pessoa;
 
 
+import br.com.educandoweb.jpautil.JPAutil;
 import br.com.educandoweb.repository.IDaoPessoa;
 import br.com.educandoweb.repository.IDaoPessoaImpl;
 import com.google.gson.Gson;
@@ -12,10 +15,11 @@ import jakarta.inject.Named;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.html.HtmlCommandButton;
+import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -40,6 +44,8 @@ public class PessoaBean {
     private GenericDao<Pessoa> genericDao = new GenericDao<Pessoa>();
     private List<Pessoa> pessoasList = new ArrayList<>();
     private IDaoPessoa iDaoPessoa = new IDaoPessoaImpl();
+    private List<SelectItem> estados;
+    private List<SelectItem> cidades;
 
 
     //MÉTODOS
@@ -167,6 +173,26 @@ public class PessoaBean {
     }
 
 
+    public void carregarCidades(AjaxBehaviorEvent event){
+
+            Estados estado = (Estados) ((HtmlSelectOneMenu)event.getSource()).getValue();
+
+                if (estado != null){
+                pessoa.setEstados(estado);
+
+                List<Cidades> cidades = JPAutil.getEntityManager().createQuery("from Cidades where estados.id = " + estado.getId()).getResultList();
+
+                List<SelectItem> selectItemsCidade = new ArrayList<SelectItem>();
+
+                for (Cidades cidade : cidades){
+                    selectItemsCidade.add(new SelectItem(cidade, cidade.getNome()));
+                }
+
+                setCidades(selectItemsCidade);
+            }
+        }
+
+
 
     //MÉTODOS ESPECIAIS
     public Pessoa getPessoa() {
@@ -186,5 +212,24 @@ public class PessoaBean {
     }
     public void setPessoasList(List<Pessoa> pessoasList) {
         this.pessoasList = pessoasList;
+    }
+    public IDaoPessoa getiDaoPessoa() {
+        return iDaoPessoa;
+    }
+    public void setiDaoPessoa(IDaoPessoa iDaoPessoa) {
+        this.iDaoPessoa = iDaoPessoa;
+    }
+    public List<SelectItem> getEstados() {
+        estados = iDaoPessoa.listaEstados();
+        return estados;
+    }
+    public void setEstados(List<SelectItem> estados) {
+        this.estados = estados;
+    }
+    public List<SelectItem> getCidades() {
+        return cidades;
+    }
+    public void setCidades(List<SelectItem> cidades) {
+        this.cidades = cidades;
     }
 }
