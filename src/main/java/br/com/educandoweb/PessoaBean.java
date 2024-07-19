@@ -20,15 +20,20 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.model.SelectItem;
+import javax.imageio.ImageIO;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import javax.xml.bind.DatatypeConverter;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
 
 
 //@SessionScoped // essa anotação mantem os dados na tela quando eu estou na mesma sesao
@@ -43,13 +48,50 @@ public class PessoaBean {
     private Pessoa pessoa = new Pessoa();
     private GenericDao<Pessoa> genericDao = new GenericDao<Pessoa>();
     private List<Pessoa> pessoasList = new ArrayList<>();
+
+    @Inject
     private IDaoPessoa iDaoPessoa = new IDaoPessoaImpl();
+
     private List<SelectItem> estados;
     private List<SelectItem> cidades;
+    private Part arquivoFoto; //Part = é uma classe auxiliar do java para fazer upload de arquivo
+
+    @Inject
+    private JPAutil jpAutil;
+
 
 
     //MÉTODOS
-    public String salvar() {
+    public String salvar() throws IOException {
+        //PROCESSAR IMAGEM
+        byte[] imagemByte = getByte(arquivoFoto.getInputStream());
+        pessoa.setFotoIconBase64Original(imagemByte); //Salva imagem original
+
+        //TRANSFORMAR EM BUFFERIMAGE
+        BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagemByte));
+
+        //IDENTIFICA O TIPO DA IMAGEM
+        int type = bufferedImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : bufferedImage.getType();
+        int width = 200;
+        int height = 200;
+
+        //CRIAR A MINIATURA
+        BufferedImage resizedImage = new BufferedImage(width, height, type);
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(bufferedImage, 0, 0, width, height, null);
+        g.dispose();
+
+        //ESCREVER NOVAMENTE A IMAGEM EM TAMANHO MENOR
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        String extensao = arquivoFoto.getContentType().split("\\/")[1]; //quebra o arquivo e pega só de qual extensao ele é. EX: /png
+        ImageIO.write(resizedImage, extensao, baos);
+
+        String miniImagem = "data:" + arquivoFoto.getContentType() + ";base64," + DatatypeConverter.printBase64Binary(baos.toByteArray());
+
+        //PROCESSAR IMAGEM
+        pessoa.setFotoIconBase64(miniImagem);
+        pessoa.setExtensao(extensao);
+
         pessoa = genericDao.merge(pessoa);
         carregarPessoas();
         mostrarMsg("Cadastrado com sucesso!");
@@ -68,6 +110,7 @@ public class PessoaBean {
     public String novo(){
         //executa algum processo antes de novo
         pessoa = new Pessoa();
+        carregarPessoas();
         return "";
     }
 
@@ -193,6 +236,65 @@ public class PessoaBean {
         }
 
 
+    public void editar(){
+        if (pessoa != null){
+            Estados estado = pessoa.getCidades().getEstados();
+            pessoa.setEstados(estado);
+
+            List<Cidades> cidades = JPAutil.getEntityManager().createQuery("from Cidades where estados.id = " + estado.getId()).getResultList();
+
+            List<SelectItem> selectItemsCidade = new ArrayList<SelectItem>();
+
+            for (Cidades cidade : cidades){
+                    selectItemsCidade.add(new SelectItem(cidade, cidade.getNome()));
+            }
+
+            setCidades(selectItemsCidade);
+        }
+    }
+
+
+    //MÉTODO QUE CONVERTE INPUTSTREAM PARA ARRAY DE BYTES
+    private byte[] getByte(InputStream is) throws IOException {
+
+        int length;
+        int size = 1024;
+        byte[] buffer = null;
+        if (is instanceof ByteArrayInputStream){
+            size = is.available();
+            buffer = new byte[size];
+            length = is.read(buffer, 0, size);
+        }else {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            buffer = new byte[size];
+
+            while ((length = is.read(buffer, 0, size)) != -1){
+                bos.write(buffer, 0, length);
+            }
+            buffer = bos.toByteArray();
+        }
+        return buffer;
+    }
+
+
+
+    public void download() throws IOException {
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String fileDownloadId = params.get("fileDownloadId");
+
+        Pessoa pessoa = genericDao.consultar(Pessoa.class, fileDownloadId);
+
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+
+        response.addHeader("Content-Disposition", "attachment; filename=download" + pessoa.getExtensao());
+        response.setContentType("application/octet-stream");
+        response.setContentLength(pessoa.getFotoIconBase64Original().length);
+        response.getOutputStream().write(pessoa.getFotoIconBase64Original());
+        response.getOutputStream().flush();
+        FacesContext.getCurrentInstance().responseComplete();
+    }
+
+
 
     //MÉTODOS ESPECIAIS
     public Pessoa getPessoa() {
@@ -232,4 +334,11 @@ public class PessoaBean {
     public void setCidades(List<SelectItem> cidades) {
         this.cidades = cidades;
     }
+    public Part getArquivoFoto() {
+        return arquivoFoto;
+    }
+    public void setArquivoFoto(Part arquivoFoto) {
+        this.arquivoFoto = arquivoFoto;
+    }
+
 }

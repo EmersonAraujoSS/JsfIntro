@@ -1,5 +1,9 @@
 package br.com.educandoweb.entities;
 
+import javax.persistence.FetchType;
+import javax.persistence.Basic;
+import javax.persistence.Lob;
+import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.persistence.Temporal;
@@ -51,6 +55,16 @@ public class Pessoa implements Serializable {
 
     @Temporal(TemporalType.DATE)
     private Date dataNascimento = new Date();
+
+    @Column(columnDefinition = "nvarchar(max)") //grava arquivos em base 64
+    private String fotoIconBase64;
+
+    private String extensao; //extensao jpg, png, jpeg
+
+    @Lob //gravar arquivos no banco de dados
+    @Basic(fetch = FetchType.LAZY) //a foto so vai ser carregada quando esse atributo for chamado
+    private byte[] fotoIconBase64Original;
+
 
 
 
@@ -227,6 +241,24 @@ public class Pessoa implements Serializable {
     }
     public void setCidades(Cidades cidades) {
         this.cidades = cidades;
+    }
+    public String getFotoIconBase64() {
+        return fotoIconBase64;
+    }
+    public void setFotoIconBase64(String fotoIconBase64) {
+        this.fotoIconBase64 = fotoIconBase64;
+    }
+    public String getExtensao() {
+        return extensao;
+    }
+    public void setExtensao(String extensao) {
+        this.extensao = extensao;
+    }
+    public byte[] getFotoIconBase64Original() {
+        return fotoIconBase64Original;
+    }
+    public void setFotoIconBase64Original(byte[] fotoIconBase64Original) {
+        this.fotoIconBase64Original = fotoIconBase64Original;
     }
 
 

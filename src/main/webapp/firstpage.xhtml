@@ -15,7 +15,7 @@
 
    <ui:include src="menu.xhtml"/>  <!--include = vai acessar meu método que está no menu, para eu não precisar repetir código -->
 
-   <h:form id="formPessoa" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"> <!-- aqui apenas o usuário de administrador vai ter acesso ao formulário-->
+   <h:form id="formPessoa" enctype="multipart/form-data" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"> <!-- aqui apenas o usuário de administrador vai ter acesso ao formulário-->
 
       <h:graphicImage height="150" width="280" library="imagens" name="avancard-logo.webp"/>
 
@@ -29,6 +29,10 @@
          <h:outputLabel value="Id:"/>
          <h:inputText value="#{pessoaBean.pessoa.id}" readonly="true"/>
 
+         <h:outputLabel value="Foto:"/>
+         <h:inputFile id="foto" value="#{pessoaBean.arquivoFoto}"/> <!--inputFile = vai ser meu campo de upload de arquivo -->
+
+         <h:outputLabel/>
          <h:outputText value="Nome:"/>
          <h:inputText value="#{pessoaBean.pessoa.nome}" required="true" requiredMessage="Informe o nome do usuário"
                       pt:placeholder="Informe o nome do usuário" validatorMessage="Nome precisa ter no mínimo 3 letras"> <!--placeholder = deixa mensagem dentro do campo de texto -->
@@ -173,8 +177,16 @@
          </h:column>
 
          <h:column>
+            <f:facet name="header">Foto</f:facet>
+            <h:commandLink actionListener="#{pessoaBean.download}">
+               <h:graphicImage width="60" height="60" value="#{pessoa.fotoIconBase64}"/>
+               <f:param name="fileDownloadId" value="#{pessoa.id}"/>
+            </h:commandLink>
+         </h:column>
+
+         <h:column>
             <f:facet name="header">Ação</f:facet>
-            <h:commandLink title="Editar">
+            <h:commandLink title="Editar" immediate="true" action="#{pessoaBean.editar}">
                <f:setPropertyActionListener target="#{pessoaBean.pessoa}" value="#{pessoa}"/><!-- target = para onde vai ser atribuido o valor-->
                <h:graphicImage value="resources/imagens/icon-editar.png"/>                           <!-- value = é o valor que é o objeto da lista de pessoas -->
             </h:commandLink>

@@ -122,6 +122,18 @@ public class GenericDao <E>{
     }
 
 
+    public E consultar(Class<E> entity, String codigo){
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
+
+        E Object = (E) entityManager.find(entity, Long.parseLong(codigo));
+        entityTransaction.commit();
+
+        return Object;
+    }
+
+
+
     public EntityManager getEntityManager() {
         return entityManager;
     }
