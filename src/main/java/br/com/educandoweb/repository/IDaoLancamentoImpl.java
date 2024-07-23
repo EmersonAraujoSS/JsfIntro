@@ -1,13 +1,21 @@
 package br.com.educandoweb.repository;
 
 import br.com.educandoweb.entities.Lancamento;
-import br.com.educandoweb.jpautil.JPAutil;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-
+import java.io.Serializable;
 import java.util.List;
 
-public class IDaoLancamentoImpl implements IDaoLancamento{
+@Named
+public class IDaoLancamentoImpl implements IDaoLancamento, Serializable {
+    private static final long serialVersionUID = 1L;
+
+
+    //Atributo
+    @Inject
+    private EntityManager entityManager;
 
 
     @Override
@@ -15,7 +23,6 @@ public class IDaoLancamentoImpl implements IDaoLancamento{
 
         List<Lancamento> lista = null;
 
-        EntityManager entityManager = JPAutil.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 

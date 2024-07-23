@@ -2,29 +2,38 @@ package br.com.educandoweb.repository;
 
 import br.com.educandoweb.entities.Estados;
 import br.com.educandoweb.entities.Pessoa;
-import br.com.educandoweb.jpautil.JPAutil;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityTransaction;
 import javax.persistence.EntityManager;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IDaoPessoaImpl implements IDaoPessoa{
 
+@Named
+public class IDaoPessoaImpl implements IDaoPessoa, Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    private EntityManager entityManager;
 
     @Override
     public Pessoa consultarUsuario(String login, String senha) {
 
         Pessoa pessoa = null;
 
-        EntityManager entityManager = JPAutil.getEntityManager();
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
 
-        pessoa = (Pessoa) entityManager.createQuery("select p from Pessoa p where p.login = '" + login + "' and p.senha = '" + senha + "'").getSingleResult();
+        try {
+            pessoa = (Pessoa) entityManager.createQuery("select p from Pessoa p where p.login = '" + login + "' and p.senha = '" + senha + "'").getSingleResult();
+            }
+            catch (javax.persistence.NoResultException e) { //se não encontrar usuario com login e senha
+            }
 
         entityTransaction.commit();
-        entityManager.close();
 
         return pessoa;
     }
@@ -35,10 +44,6 @@ public class IDaoPessoaImpl implements IDaoPessoa{
     public List<SelectItem> listaEstados() {
 
         List<SelectItem> selectItems = new ArrayList<SelectItem>();
-
-        EntityManager entityManager = JPAutil.getEntityManager();
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.begin();
 
         List<Estados> estados = entityManager.createQuery("from Estados").getResultList();
 

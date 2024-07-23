@@ -1,68 +1,68 @@
 package br.com.educandoweb.dao;
 
-import br.com.educandoweb.entities.Pessoa;
 import br.com.educandoweb.jpautil.JPAutil;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityTransaction;
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
+@Named
+public class GenericDao <E> implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-public class GenericDao <E>{
+    @Inject
+    private EntityManager entityManager;
 
+    @Inject
+    private JPAutil jpAutil;
 
-    private EntityManager entityManager = JPAutil.getEntityManager(); //aqui estou estanciando minha conexão com o banco de dados e passsando o metodo que faz update
+    //(NÃO VAI MAIS PRECISAR DISSO POIS AGORA VOU INJETAR A DEPENDENCIA COM UMA ANOTAÇÃO)
+   // private EntityManager entityManager = JPAutil.getEntityManager(); //aqui estou estanciando minha conexão com o banco de dados e passsando o metodo que faz update
                                                                             //tudo o que tem no DAO é para acessar o banco de dados
 
     //Metodo
     public void salvar(E entity){
-        EntityManager entityManager = JPAutil.getEntityManager();
         EntityTransaction entityTransaction = entityManager.getTransaction();  //instanciando minha transação que vai fazer as modificações no banco de dados
         entityTransaction.begin(); // iniciando minha transacao
 
         entityManager.persist(entity); // persist = esse persist que é o comando usado para salvar
         entityTransaction.commit();
-        entityManager.close();
 
     }
 
 
     public E merge(E entity){
-        EntityManager entityManager = JPAutil.getEntityManager();
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
 
         E retorno = entityManager.merge(entity);
         entityTransaction.commit();
-        entityManager.close();
 
         return retorno;
     }
 
 
     public void deletePorId(E entity){
-        EntityManager entityManager = JPAutil.getEntityManager();
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
 
-        Object id = JPAutil.getPrimaryKey(entity);
+        Object id = jpAutil.getPrimaryKey(entity);
         entityManager.createQuery("delete from "+entity.getClass().getCanonicalName() + " where id = " + id).executeUpdate();
 
         entityTransaction.commit();
-        entityManager.close();
 
     }
 
 
     public List<E> getListEntity(Class<E> entity) {
-        EntityManager entityManager = JPAutil.getEntityManager();
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
 
         List<E> retornoList = entityManager.createQuery("from "+entity.getName()).getResultList();
 
         entityTransaction.commit();
-        entityManager.close();
 
         return retornoList;
 
@@ -85,7 +85,7 @@ public class GenericDao <E>{
 
     public E pesquisar(E entity){
 
-        Object id = JPAutil.getPrimaryKey(entity);
+        Object id = jpAutil.getPrimaryKey(entity);
 
         E e = (E) entityManager.find(entity.getClass(), id);
 

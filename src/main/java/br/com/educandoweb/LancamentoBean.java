@@ -4,30 +4,32 @@ import br.com.educandoweb.dao.GenericDao;
 import br.com.educandoweb.entities.Lancamento;
 import br.com.educandoweb.entities.Pessoa;
 import br.com.educandoweb.repository.IDaoLancamento;
-import br.com.educandoweb.repository.IDaoLancamentoImpl;
-
-
-import jakarta.annotation.PostConstruct;
-import jakarta.inject.Named;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
+//@ManagedBean // meu ManagedBean conecta o meu Bean a minha pagina xhtml
 @ViewScoped
-@ManagedBean // meu ManagedBean conecta o meu Bean a minha pagina xhtml
 @Named(value = "lancamentoBean")
-public class LancamentoBean {
+public class LancamentoBean implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     //ATRIBUTOS
     private Lancamento lancamento = new Lancamento();
-    private GenericDao<Lancamento> genericDao = new GenericDao();
     private List<Lancamento> lancamentoList = new ArrayList<>();
-    private IDaoLancamento daoLancamento = new IDaoLancamentoImpl();
+
+    @Inject
+    private GenericDao<Lancamento> genericDao;
+
+    @Inject
+    private IDaoLancamento daoLancamento;
 
 
     // MÉTODOS

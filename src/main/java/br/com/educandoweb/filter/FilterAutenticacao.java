@@ -3,6 +3,7 @@ package br.com.educandoweb.filter;
 import br.com.educandoweb.entities.Pessoa;
 import br.com.educandoweb.jpautil.JPAutil;
 
+import javax.inject.Inject;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -12,10 +13,14 @@ import java.io.IOException;
 @WebFilter(urlPatterns = {"/*"}) // urlPatterns = vai mapear todas as urls que tem esse indicador
 public class FilterAutenticacao implements Filter {
 
+    @Inject
+    private JPAutil jpAutil;
+
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        JPAutil.getEntityManager();
+        jpAutil.getEntityManager();
     }
 
     @Override

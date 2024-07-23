@@ -4,21 +4,22 @@ import br.com.educandoweb.dao.GenericDao;
 import br.com.educandoweb.entities.Cidades;
 import br.com.educandoweb.entities.Estados;
 import br.com.educandoweb.entities.Pessoa;
-
-
 import br.com.educandoweb.jpautil.JPAutil;
 import br.com.educandoweb.repository.IDaoPessoa;
 import br.com.educandoweb.repository.IDaoPessoaImpl;
 import com.google.gson.Gson;
-import jakarta.annotation.PostConstruct;
-import jakarta.inject.Named;
+import net.bootsfaces.component.selectOneMenu.SelectOneMenu;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -37,66 +38,81 @@ import java.util.Map;
 
 
 //@SessionScoped // essa anotação mantem os dados na tela quando eu estou na mesma sesao
-@ViewScoped // essa anotação mantem os dados na tela enquanto o usuário estiver logado na tela
 //@ApplicationScoped //ele vai manter os dados para todos os usuários (compartilha os dados com outros usuarios) (mesmo abrindo a url em outro navegador)
-@ManagedBean // meu ManagedBean conecta o meu Bean a minha pagina xhtml
+//@ManagedBean // meu ManagedBean conecta o meu Bean a minha pagina xhtml
+@ViewScoped // essa anotação mantem os dados na tela enquanto o usuário estiver logado na tela
 @Named(value = "pessoaBean")
-
-public class PessoaBean {
+public class PessoaBean implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     //ATRIBUTOS
     private Pessoa pessoa = new Pessoa();
-    private GenericDao<Pessoa> genericDao = new GenericDao<Pessoa>();
-    private List<Pessoa> pessoasList = new ArrayList<>();
 
     @Inject
-    private IDaoPessoa iDaoPessoa = new IDaoPessoaImpl();
+    private GenericDao<Pessoa> genericDao;
 
-    private List<SelectItem> estados;
-    private List<SelectItem> cidades;
-    private Part arquivoFoto; //Part = é uma classe auxiliar do java para fazer upload de arquivo
+    @Inject
+    private IDaoPessoa iDaoPessoa;
+
+    @Inject
+    EntityManager entityManager;
 
     @Inject
     private JPAutil jpAutil;
+
+    private List<Pessoa> pessoasList = new ArrayList<>();
+    private List<SelectItem> estados;
+    private List<SelectItem> cidades;
+    private Part arquivoFoto; //Part = é uma classe auxiliar do java para fazer upload de arquivo
 
 
 
     //MÉTODOS
     public String salvar() throws IOException {
-        //PROCESSAR IMAGEM
-        byte[] imagemByte = getByte(arquivoFoto.getInputStream());
-        pessoa.setFotoIconBase64Original(imagemByte); //Salva imagem original
 
-        //TRANSFORMAR EM BUFFERIMAGE
-        BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagemByte));
+        if(arquivoFoto != null && arquivoFoto.getInputStream() != null) {
+            //PROCESSAR IMAGEM
+            byte[] imagemByte = getByte(arquivoFoto.getInputStream());
 
-        //IDENTIFICA O TIPO DA IMAGEM
-        int type = bufferedImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : bufferedImage.getType();
-        int width = 200;
-        int height = 200;
+            //TRANSFORMAR EM BUFFERIMAGE
+            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagemByte));
 
-        //CRIAR A MINIATURA
-        BufferedImage resizedImage = new BufferedImage(width, height, type);
-        Graphics2D g = resizedImage.createGraphics();
-        g.drawImage(bufferedImage, 0, 0, width, height, null);
-        g.dispose();
+            if (bufferedImage != null) {
+                pessoa.setFotoIconBase64Original(imagemByte); //Salva imagem original
 
-        //ESCREVER NOVAMENTE A IMAGEM EM TAMANHO MENOR
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        String extensao = arquivoFoto.getContentType().split("\\/")[1]; //quebra o arquivo e pega só de qual extensao ele é. EX: /png
-        ImageIO.write(resizedImage, extensao, baos);
+                //IDENTIFICA O TIPO DA IMAGEM
+                int type = bufferedImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : bufferedImage.getType();
+                int width = 200;
+                int height = 200;
 
-        String miniImagem = "data:" + arquivoFoto.getContentType() + ";base64," + DatatypeConverter.printBase64Binary(baos.toByteArray());
+                //CRIAR A MINIATURA
+                BufferedImage resizedImage = new BufferedImage(width, height, type);
+                Graphics2D g = resizedImage.createGraphics();
+                g.drawImage(bufferedImage, 0, 0, width, height, null);
+                g.dispose();
 
-        //PROCESSAR IMAGEM
-        pessoa.setFotoIconBase64(miniImagem);
-        pessoa.setExtensao(extensao);
+                //ESCREVER NOVAMENTE A IMAGEM EM TAMANHO MENOR
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                String extensao = arquivoFoto.getContentType().split("\\/")[1]; //quebra o arquivo e pega só de qual extensao ele é. EX: /png
+                ImageIO.write(resizedImage, extensao, baos);
+
+                String miniImagem = "data:" + arquivoFoto.getContentType() + ";base64," + DatatypeConverter.printBase64Binary(baos.toByteArray());
+
+                //PROCESSAR IMAGEM
+                pessoa.setFotoIconBase64(miniImagem);
+                pessoa.setExtensao(extensao);
+            }
+        }
 
         pessoa = genericDao.merge(pessoa);
         carregarPessoas();
         mostrarMsg("Cadastrado com sucesso!");
-
         return "";
+    }
+
+
+    public void registraLog(){
+        System.out.println("metodo registra log");
     }
 
 
@@ -110,7 +126,6 @@ public class PessoaBean {
     public String novo(){
         //executa algum processo antes de novo
         pessoa = new Pessoa();
-        carregarPessoas();
         return "";
     }
 
@@ -166,6 +181,8 @@ public class PessoaBean {
             externalContext.getSessionMap().put("usuarioLogado", pessoaUser);
 
             return "firstpage.xhtml";
+        }else {
+            FacesContext.getCurrentInstance().addMessage("msg", new FacesMessage("Usuário não encontrado"));
         }
 
         return "index.xhtml";
@@ -218,12 +235,12 @@ public class PessoaBean {
 
     public void carregarCidades(AjaxBehaviorEvent event){
 
-            Estados estado = (Estados) ((HtmlSelectOneMenu)event.getSource()).getValue();
+            Estados estado = (Estados) ((SelectOneMenu)event.getSource()).getValue();
 
                 if (estado != null){
                 pessoa.setEstados(estado);
 
-                List<Cidades> cidades = JPAutil.getEntityManager().createQuery("from Cidades where estados.id = " + estado.getId()).getResultList();
+                List<Cidades> cidades = jpAutil.getEntityManager().createQuery("from Cidades where estados.id = " + estado.getId()).getResultList();
 
                 List<SelectItem> selectItemsCidade = new ArrayList<SelectItem>();
 
@@ -236,12 +253,12 @@ public class PessoaBean {
         }
 
 
-    public void editar(){
+    public String editar(){
         if (pessoa != null){
             Estados estado = pessoa.getCidades().getEstados();
             pessoa.setEstados(estado);
 
-            List<Cidades> cidades = JPAutil.getEntityManager().createQuery("from Cidades where estados.id = " + estado.getId()).getResultList();
+            List<Cidades> cidades = jpAutil.getEntityManager().createQuery("from Cidades where estados.id = " + estado.getId()).getResultList();
 
             List<SelectItem> selectItemsCidade = new ArrayList<SelectItem>();
 
@@ -251,6 +268,8 @@ public class PessoaBean {
 
             setCidades(selectItemsCidade);
         }
+
+        return "";
     }
 
 
@@ -294,6 +313,11 @@ public class PessoaBean {
         FacesContext.getCurrentInstance().responseComplete();
     }
 
+
+    public void mudancaDeValor(ValueChangeEvent event){ //para eu ter os dados das mudanças de valor eu uso o ValueChangeEvent
+        System.out.println("Valor antigo: " + event.getOldValue());
+        System.out.println("Novo valor: " + event.getNewValue());
+    }
 
 
     //MÉTODOS ESPECIAIS

@@ -1,9 +1,9 @@
 package br.com.educandoweb.converter;
 
-
 import br.com.educandoweb.entities.Estados;
-import br.com.educandoweb.jpautil.JPAutil;
-import javax.persistence.EntityTransaction;
+
+import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -14,14 +14,16 @@ import java.io.Serializable;
 
 @FacesConverter(forClass = Estados.class, value = "estadoConverter")
 public class EstadoConverter implements Converter, Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    private EntityManager entityManager;
 
 
     @Override //RETORNA O OBJETO INTEIRO
     public Object getAsObject(FacesContext context, UIComponent component, String codigoEstado) {
 
-        EntityManager entityManager = JPAutil.getEntityManager();
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.begin();
+        EntityManager entityManager = CDI.current().select(EntityManager.class).get();
 
         Estados estados = (Estados) entityManager.find(Estados.class, Long.parseLong(codigoEstado));
 

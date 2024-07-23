@@ -1,9 +1,9 @@
 package br.com.educandoweb.converter;
 
-
 import br.com.educandoweb.entities.Cidades;
-import br.com.educandoweb.jpautil.JPAutil;
-import javax.persistence.EntityTransaction;
+
+import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -13,15 +13,17 @@ import java.io.Serializable;
 
 @FacesConverter(forClass = Cidades.class, value = "cidadeConverter")
 public class CidadeConverter implements Converter, Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    private EntityManager entityManager;
 
 
     //RETORNA O OBJETO INTEIRO
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String codigoCidade) {
 
-        EntityManager entityManager = JPAutil.getEntityManager();
-        EntityTransaction entityTransaction = entityManager.getTransaction();
-        entityTransaction.begin();
+        EntityManager entityManager = CDI.current().select(EntityManager.class).get();
 
         Cidades cidade = (Cidades) entityManager.find(Cidades.class, Long.parseLong(codigoCidade));
 
