@@ -1,5 +1,8 @@
 package br.com.educandoweb.entities;
 
+import org.hibernate.validator.constraints.br.CPF;
+import org.hibernate.validator.constraints.br.TituloEleitoral;
+
 import javax.persistence.FetchType;
 import javax.persistence.Basic;
 import javax.persistence.Lob;
@@ -12,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Entity;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -26,9 +30,24 @@ public class Pessoa implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO) //para não dar conflito de insert repetido
     private Long id;
 
+    @NotEmpty
+    @Size(min = 3, max = 50, message = "Nome deve ter entre 3 e 50 letras") //@Size = vai fazer a validação do meu nome
     private String nome;
+
+    @NotEmpty(message = "Sobrenome deve ser informado")
+    @NotNull(message = "Sobrenome deve ser informado") //@NotNull /@NotEmpty = vai vir da minha depedencia de javax.validation que ira fazer essa validação para mim
     private String sobrenome;
+
+    @DecimalMin(value = "10", message = "Idade deve ser maior que 10")
+    @DecimalMax(value = "100", message = "Idade deve ser maior que 100")
     private Integer idade;
+
+    @CPF(message = "Cpf Inválido")
+    private String cpf;
+
+    @TituloEleitoral(message = "Título Eleitorial Inválido")
+    private String titEleitoral;
+
     private String sexo;
     private String[] frameworks;
     private Boolean ativo;
@@ -260,7 +279,18 @@ public class Pessoa implements Serializable {
     public void setFotoIconBase64Original(byte[] fotoIconBase64Original) {
         this.fotoIconBase64Original = fotoIconBase64Original;
     }
-
+    public String getCpf() {
+        return cpf;
+    }
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+    public String getTitEleitoral() {
+        return titEleitoral;
+    }
+    public void setTitEleitoral(String titEleitoral) {
+        this.titEleitoral = titEleitoral;
+    }
 
 
 
