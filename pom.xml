@@ -106,8 +106,6 @@
             <version>3.0.0</version>
         </dependency>
 
-
-
         <!-- Gson dependency -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -123,6 +121,27 @@
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
             <version>9.1.0</version>
+        </dependency>
+
+        <!-- Weld (implementação do CDI) -->
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet</artifactId>
+            <version>2.2.9.Final</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jandex</artifactId>
+            <version>1.2.3.Final</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.bootsfaces</groupId>
+            <artifactId>bootsfaces</artifactId>
+            <version>1.5.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
