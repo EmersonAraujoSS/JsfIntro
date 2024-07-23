@@ -3,6 +3,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
@@ -14,24 +15,32 @@
 
    <ui:include src="/menu.xhtml"/>   <!--include = vai acessar meu método que está no menu, para eu não precisar repetir código -->
 
-   <h:form id="formLancamento">
+   <b:form id="formLancamento">
 
-         <h:panelGrid columns="2">
+         <b:panelGrid columns="2">
             <f:facet name="header">
                <h:outputLabel value="Lançamentos"/>
             </f:facet>
 
-            <h:outputLabel value="ID:"/>
-            <h:inputText value="#{lancamentoBean.lancamento.id}" readonly="true"/>
+            <b:column>
+               <h:outputLabel value="ID:"/>
+               <b:inputText value="#{lancamentoBean.lancamento.id}" readonly="true"/>
+            </b:column>
 
-            <h:outputLabel value="Nota:"/>
-            <h:inputText value="#{lancamentoBean.lancamento.numeroNotaFiscal}"/>
+            <b:column>
+               <h:outputLabel value="Nota:"/>
+               <b:inputText value="#{lancamentoBean.lancamento.numeroNotaFiscal}"/>
+            </b:column>
 
-            <h:outputLabel value="Origem:"/>
-            <h:inputText value="#{lancamentoBean.lancamento.empresaOrigem}"/>
+            <b:column>
+               <h:outputLabel value="Origem:"/>
+               <b:inputText value="#{lancamentoBean.lancamento.empresaOrigem}"/>
+            </b:column>
 
-            <h:outputLabel value="Destino:"/>
-            <h:inputText value="#{lancamentoBean.lancamento.empresaDestino}"/>
+            <b:column>
+               <h:outputLabel value="Destino:"/>
+               <b:inputText value="#{lancamentoBean.lancamento.empresaDestino}"/>
+            </b:column>
 
             <h:outputLabel/>
             <h:panelGroup>
@@ -42,7 +51,7 @@
             </h:panelGroup>
 
             <h:outputLabel/>
-            <h:dataTable value="#{lancamentoBean.lancamentoList}" var="lanc" border="2" cellpadding="6">
+            <b:dataTable value="#{lancamentoBean.lancamentoList}" var="lanc" border="2" cellpadding="6">
                <f:facet name="header">Lista de lançamentos</f:facet>
 
                <h:column>
@@ -80,10 +89,10 @@
                      <h:graphicImage value="resources/imagens/icon-remover.png"/>
                   </h:commandLink>
                </h:column>
-            </h:dataTable>
+            </b:dataTable>
 
-         </h:panelGrid>
-   </h:form>
+         </b:panelGrid>
+   </b:form>
 
 </h:body>
 
