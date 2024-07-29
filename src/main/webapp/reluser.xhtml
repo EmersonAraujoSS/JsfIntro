@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+   <title>Usuário</title>
+</h:head>
+
+<link href="resources/style.css" rel="stylesheet"/>  <!--link = vai servir para meu estilo css criado  -->
+
+<h:body>
+
+   <ui:include src="/menu.xhtml"/>   <!--include = vai acessar meu método que está no menu, para eu não precisar repetir código -->
+
+   <b:messages id="msg"/>
+   <b:form id="formPessoas">
+
+         <b:panelGrid columns="2">
+             <b:column>
+                 <h:outputLabel value="Data inicial:"/>
+                 <b:datepicker locale="en" value="#{relUser.dataIni}"/>
+             </b:column>
+
+             <b:column>
+                 <h:outputLabel value="Data Final:"/>
+                 <b:datepicker locale="en" value="#{relUser.dataFim}"/>
+             </b:column>
+
+             <b:column>
+                 <h:outputLabel value="Nome:"/>
+                 <b:inputText value="#{relUser.nome}"/>
+             </b:column>
+
+         </b:panelGrid>
+
+       <b:commandButton value="Buscar" action="#{relUser.relPessoa}" title="Buscar" look="primary" style="margin-left: 15px;"/>
+
+   </b:form>
+
+      <br/>
+      <br/>
+      <br/>
+
+    <b:form>
+        <b:dataTable value="#{relUser.pessoasList}" var="p" border="2" cellpadding="6" pdf="true" excel="true">
+
+            <b:dataTableColumn value="#{p.id}" label="ID"/> <!--label = vai ser o nome que vai aparecer na tela -->
+            <b:dataTableColumn value="#{p.nome}" label="Nome"/>
+
+        </b:dataTable>
+    </b:form>
+
+</h:body>
+
+</html>

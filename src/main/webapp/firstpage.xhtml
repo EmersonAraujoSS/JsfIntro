@@ -12,6 +12,8 @@
    <title>Cadastro de Usuários</title>
 </h:head>
 
+<link href="resources/style.css" rel="stylesheet"/>  <!--link = vai servir para meu estilo css criado  -->
+
 <h:body>
 
    <ui:include src="menu.xhtml"/>  <!--include = vai acessar meu método que está no menu, para eu não precisar repetir código -->
@@ -22,10 +24,12 @@
 
       <b:messages/>  <!-- adicionando a mensagem feita no meu pessoabean  -->
 
-      <h:panelGrid columns="4"> <!-- panelGrid = serve para organizar  -->
+      <h:panelGrid columns="2"> <!-- panelGrid = serve para organizar  -->
          <f:facet name="header">
             <h:outputText value="Cadastro de Usuários"/>
          </f:facet> <!-- facet = serve para eu colocar meio que um título  -->
+
+      <b:panel>
 
          <b:column>
             <h:outputLabel value="Id:"/>
@@ -50,19 +54,23 @@
             <b:inputText value="#{pessoaBean.pessoa.sobrenome}"/>
          </b:column>
 
+      </b:panel>
+
+      <b:panel>
+
          <b:column>
             <h:outputLabel value="Idade:"/>
-            <b:inputText value="#{pessoaBean.pessoa.idade}"/>
+            <b:inputText value="#{pessoaBean.pessoa.idade}" mask="numeric"/>
          </b:column>
 
          <b:column>
             <h:outputLabel value="Cpf:"/>
-            <b:inputText value="#{pessoaBean.pessoa.cpf}"/>
+            <b:inputText value="#{pessoaBean.pessoa.cpf}" pt:placeholder="Informe um CPF válido" mask="999.999.999-99"/>
          </b:column>
 
          <b:column>
             <h:outputLabel value="Título Eleitoral"/>
-            <b:inputText value="#{pessoaBean.pessoa.titEleitoral}"/>
+            <b:inputText value="#{pessoaBean.pessoa.titEleitoral}" mask="numeric"/>
          </b:column>
 
          <b:column>
@@ -74,11 +82,12 @@
          </b:selectOneMenu>                                                      <!-- itemLabel = é o que vai aparecer na tela para o usuário-->
          </b:column>
 
+      </b:panel>
+
+      <b:panel>
          <b:column>
          <h:outputLabel value="Nascimento:"/>
-            <b:inputText value="#{pessoaBean.pessoa.dataNascimento}" converterMessage="Data de nascimento errada">
-               <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="GMT-04:00"/>
-            </b:inputText>
+            <b:datepicker locale="pt_BR" value="#{pessoaBean.pessoa.dataNascimento}"/>
          </b:column>
 
          <b:column>
@@ -96,6 +105,10 @@
             <h:outputLabel value="Ativo:"/>
             <h:selectBooleanCheckbox value="#{pessoaBean.pessoa.ativo}"/>
          </b:column>
+
+      </b:panel>
+
+      <b:panel>
 
          <b:column>
             <h:outputLabel value="Login:"/>
@@ -137,6 +150,9 @@
             <f:selectItem itemValue="5" itemLabel="Cobol"/>
          </h:selectManyCheckbox>
          </b:column>
+      </b:panel>
+
+      <b:panel>
 
          <b:column>
          <h:outputLabel value="Estados:"/>
@@ -157,7 +173,7 @@
 
          <b:column>
          <h:outputLabel value="CEP:"/>
-         <b:inputText value="#{pessoaBean.pessoa.cep}" pt:placeholder="Informe um cep válido">      <!-- render = vai carregar o logradouro assim que eu colocar o cep-->
+         <b:inputText value="#{pessoaBean.pessoa.cep}" pt:placeholder="Informe um cep válido" mask="99999-999">      <!-- render = vai carregar o logradouro assim que eu colocar o cep-->
             <f:ajax event="blur" execute="@form" listener="#{pessoaBean.pesquisaCep}" render="@form"/>  <!-- event="blur" = no jsf significa perda de foco-->
          </b:inputText>
          </b:column>
@@ -166,6 +182,10 @@
             <h:outputLabel value="Logradouro:"/>
             <b:inputText value="#{pessoaBean.pessoa.logradouro}" id="logradouro"/>
          </b:column>
+
+      </b:panel>
+
+      <b:panel>
 
          <b:column>
             <h:outputLabel value="Complemento:"/>
@@ -186,7 +206,9 @@
             <h:outputLabel value="UF:"/>
             <b:inputText value="#{pessoaBean.pessoa.uf}" id="uf"/>
          </b:column>
+      </b:panel>
 
+      <b:panel>
          <b:column>
             <h:outputLabel value="Unidade:"/>
             <b:inputText value="#{pessoaBean.pessoa.unidade}" id="unidade"/>
@@ -202,6 +224,8 @@
             <b:inputText value="#{pessoaBean.pessoa.gia}" id="gia"/>
          </b:column>
 
+      </b:panel>
+
          <h:outputLabel/>
          <h:panelGroup>
             <h:commandButton value="Novo" action="#{pessoaBean.novo}" image="resources/imagens/add-user.png" title="Novo" immediate="true"/>
@@ -211,12 +235,17 @@
          </h:panelGroup>
 
    </h:panelGrid>
+
+      <br/>
+      <br/>
+      <br/>
+
    </h:form>
 
    <h:form id="formTable">                                                       <!--cellpadding = ajusta o tamanho da célula -->
       <b:dataTable value="#{pessoaBean.pessoasList}" var="pessoa" border="2" cellpadding="6">  <!-- dataTable = estou usando para organizar em forma de tabela -->
          <f:facet name="header"> <!-- facet = serve para eu colocar meio que um título  -->
-            Lista de usuários cadastradas
+            Lista de usuários cadastrados:
          </f:facet>
 
          <h:column>

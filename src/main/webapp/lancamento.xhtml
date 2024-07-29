@@ -11,10 +11,13 @@
    <title>Lançamentos</title>
 </h:head>
 
+<link href="resources/style.css" rel="stylesheet"/>  <!--link = vai servir para meu estilo css criado  -->
+
 <h:body>
 
    <ui:include src="/menu.xhtml"/>   <!--include = vai acessar meu método que está no menu, para eu não precisar repetir código -->
 
+   <b:messages id="msg"/>
    <b:form id="formLancamento">
 
          <b:panelGrid columns="2">
@@ -22,6 +25,7 @@
                <h:outputLabel value="Lançamentos"/>
             </f:facet>
 
+            <b:panel> <!-- panel = vai dividir em painel -->
             <b:column>
                <h:outputLabel value="ID:"/>
                <b:inputText value="#{lancamentoBean.lancamento.id}" readonly="true"/>
@@ -29,28 +33,51 @@
 
             <b:column>
                <h:outputLabel value="Nota:"/>
-               <b:inputText value="#{lancamentoBean.lancamento.numeroNotaFiscal}"/>
+               <b:inputText value="#{lancamentoBean.lancamento.numeroNotaFiscal}" requiredMessage="Informe o número da nota" required="true"/>
             </b:column>
 
             <b:column>
+               <h:outputLabel value="Data incial:"/>
+               <b:datepicker value="#{lancamentoBean.lancamento.dataInicial}" locale="en" required="true" requiredMessage="Data inicial"/> <!-- datepicker = vai ser um campo de data em bootfaces no meu formulário -->
+            </b:column>
+
+            </b:panel>
+
+            <b:panel>
+            <b:column>
                <h:outputLabel value="Origem:"/>
-               <b:inputText value="#{lancamentoBean.lancamento.empresaOrigem}"/>
+               <b:inputText value="#{lancamentoBean.lancamento.empresaOrigem}" requiredMessage="Informe a origem" required="true"/>
             </b:column>
 
             <b:column>
                <h:outputLabel value="Destino:"/>
-               <b:inputText value="#{lancamentoBean.lancamento.empresaDestino}"/>
+               <b:inputText value="#{lancamentoBean.lancamento.empresaDestino}" requiredMessage="Informe o destino" required="true"/>
             </b:column>
 
-            <h:outputLabel/>
-            <h:panelGroup>
-               <h:commandButton value="Novo" action="#{lancamentoBean.novo}" image="resources/imagens/add-user.png" title="Novo"/>
-               <h:commandButton value="Salvar" action="#{lancamentoBean.salvar}" image="resources/imagens/icon-salvar.png" title="Salvar"/>
-               <h:commandButton value="Remove" action="#{lancamentoBean.remove}" image="resources/imagens/icon-remover.png" title="Remover" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"/>
-               <h:commandButton value="Limpar" type="reset" image="resources/imagens/icon-limpar.png" title="Limpar"/>
-            </h:panelGroup>
+            <b:column>
+               <h:outputLabel value="Data final:"/>
+               <b:datepicker value="#{lancamentoBean.lancamento.dataFim}" locale="en" required="true" requiredMessage="Data final"/>
+            </b:column>
 
-            <h:outputLabel/>
+            </b:panel>
+         </b:panelGrid>
+
+            <b:column>
+               <h:outputLabel/>
+               <h:panelGroup>
+                  <h:commandButton value="Novo" action="#{lancamentoBean.novo}" image="resources/imagens/add-user.png" title="Novo"/>
+                  <h:commandButton value="Salvar" action="#{lancamentoBean.salvar}" image="resources/imagens/icon-salvar.png" title="Salvar"/>
+                  <h:commandButton value="Remove" action="#{lancamentoBean.remove}" image="resources/imagens/icon-remover.png" title="Remover" rendered="#{pessoaBean.permiteAcesso('ADMINISTRADOR')}"/>
+                  <h:commandButton value="Limpar" action="#{lancamentoBean.novo}" image="resources/imagens/icon-limpar.png" title="Limpar"/>
+               </h:panelGroup>
+            </b:column>
+
+   </b:form>
+
+      <br/>
+      <br/>
+      <br/>
+            <b:form>
             <b:dataTable value="#{lancamentoBean.lancamentoList}" var="lanc" border="2" cellpadding="6">
                <f:facet name="header">Lista de lançamentos</f:facet>
 
@@ -90,9 +117,7 @@
                   </h:commandLink>
                </h:column>
             </b:dataTable>
-
-         </b:panelGrid>
-   </b:form>
+            </b:form>
 
 </h:body>
 
