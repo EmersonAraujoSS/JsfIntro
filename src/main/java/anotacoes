@@ -1,1 +1,7 @@
 - ATÉ ESSE COMMIT O PROJETO ESTÁ RODANDO CORRETAMENTE
+
+- EntityManager: É a interface principal da JPA para interagir com o contexto de persistência.
+        Ele é responsável por operações de CRUD (Create, Read, Update, Delete) em entidades.
+
+- O JSF é um framework MVC (Model, View, Controller)
+
