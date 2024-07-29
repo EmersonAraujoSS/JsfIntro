@@ -1,1 +1,6 @@
-Primeito projeto em jsf 2.2 com bootfaces, hibernate, jpa e cdi
+- Primeito projeto em jsf 2.2 com bootfaces, hibernate, jpa e cdi
+
+- EntityManager: É a interface principal da JPA para interagir com o contexto de persistência.
+        Ele é responsável por operações de CRUD (Create, Read, Update, Delete) em entidades.
+
+- O JSF é um framework MVC (Model, View, Controller)
