@@ -68,6 +68,16 @@ public class GenericDao <E> implements Serializable {
 
     }
 
+    public List<E> getListEntityLimit10(Class<E> entity) {
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
+
+        List<E> retornoList = entityManager.createQuery("from "+entity.getName() + " order by id desc ").setMaxResults(10).getResultList();
+
+        entityTransaction.commit();
+
+        return retornoList;
+    }
 
 
 

@@ -148,7 +148,7 @@ public class PessoaBean implements Serializable {
 
     @PostConstruct  //essa anotação indica que sempre que for carregado em memória, ele irá carregar a minha lista
     public void carregarPessoas(){
-        pessoasList = genericDao.getListEntity(Pessoa.class);
+        pessoasList = genericDao.getListEntityLimit10(Pessoa.class);
     }
 
 

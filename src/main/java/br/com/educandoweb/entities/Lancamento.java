@@ -1,6 +1,8 @@
 package br.com.educandoweb.entities;
 
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.hibernate.annotations.ForeignKey;
 import javax.persistence.ManyToOne;
 import javax.persistence.GenerationType;
@@ -8,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Entity;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -24,6 +27,12 @@ public class Lancamento implements Serializable {
     private String numeroNotaFiscal;
     private String empresaOrigem;
     private String empresaDestino;
+
+    @Temporal(TemporalType.DATE)
+    private Date dataInicial;
+    @Temporal(TemporalType.DATE)
+    private Date dataFim;
+
 
     @ManyToOne(optional = false) //uma pessoa pode fazer vários lancamentos
     @ForeignKey(name = "usuario_fk")
@@ -67,7 +76,18 @@ public class Lancamento implements Serializable {
     public void setUsuario(Pessoa usuario) {
         this.usuario = usuario;
     }
-
+    public Date getDataInicial() {
+        return dataInicial;
+    }
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+    public Date getDataFim() {
+        return dataFim;
+    }
+    public void setDataFim(Date dataFim) {
+        this.dataFim = dataFim;
+    }
 
 
 

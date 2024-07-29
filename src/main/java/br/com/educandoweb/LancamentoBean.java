@@ -5,6 +5,7 @@ import br.com.educandoweb.entities.Lancamento;
 import br.com.educandoweb.entities.Pessoa;
 import br.com.educandoweb.repository.IDaoLancamento;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -42,6 +43,7 @@ public class LancamentoBean implements Serializable {
         lancamento.setUsuario(pessoaUser);
         genericDao.merge(lancamento);
         carregarLancamentos();
+        FacesContext.getCurrentInstance().addMessage("msg", new FacesMessage("Salvo com sucesso"));
 
         return "";
     }
@@ -53,7 +55,7 @@ public class LancamentoBean implements Serializable {
         ExternalContext externalContext = context.getExternalContext();
         Pessoa pessoaUser = (Pessoa) externalContext.getSessionMap().get("usuarioLogado");
 
-        lancamentoList = daoLancamento.consultar(pessoaUser.getId());
+        lancamentoList = daoLancamento.consultarLimite10(pessoaUser.getId());
     }
 
 
@@ -68,6 +70,7 @@ public class LancamentoBean implements Serializable {
         genericDao.deletePorId(lancamento);
         lancamento = new Lancamento();
         carregarLancamentos();
+        FacesContext.getCurrentInstance().addMessage("msg",new FacesMessage("Excluido com sucesso"));
         return "";
     }
 
